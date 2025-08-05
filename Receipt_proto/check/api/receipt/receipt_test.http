@@ -1,0 +1,32 @@
+
+###
+GET http://localhost:8101/receipt/check/teacher/style?receipt_style_id=ReceiptStyle-1001
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTQzMTk0MTksImlzcyI6IkhvNXNqT0c5MVFXd2pVRUlodzNFRENCQTU3SFBlbnBNIiwic3ViIjoiQTIwMDEiLCJ0eXBlIjoiYWNjZXNzIn0.JJbIr9tgZWyLQmppEhPzhiVsepYlv67rH3SOUukmj5I
+
+//{
+//  "receipt_style_id": "ReceiptStyle-1001"
+//}
+###
+GET http://localhost:8101/receipt/check/Single?receipt_write_id=ReceiptWrite-1001
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTQzMTQ3OTgsImlzcyI6IkhvNXNqT0c5MVFXd2pVRUlodzNFRENCQTU3SFBlbnBNIiwic3ViIjoiQTIwMDEiLCJ0eXBlIjoiYWNjZXNzIn0.jAcxln-25nr7vPYvf0qBTiX1LvoBhuBxTYmHRXqFm0Y
+
+//{
+//  "receipt_style_id": "ReceiptStyle-1001"
+//}
+###
+GET http://localhost:8101/receipt/check/list?notice_id=1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTQzMTQ3OTgsImlzcyI6IkhvNXNqT0c5MVFXd2pVRUlodzNFRENCQTU3SFBlbnBNIiwic3ViIjoiQTIwMDEiLCJ0eXBlIjoiYWNjZXNzIn0.jAcxln-25nr7vPYvf0qBTiX1LvoBhuBxTYmHRXqFm0Y
+
+
+###暂时还没有实现
+GET http://localhost:8000/receipt/list/download_url
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTM5NjcwMTEsImlzcyI6IkhvNXNqT0c5MVFXd2pVRUlodzNFRENCQTU3SFBlbnBNIiwic3ViIjoiMjAyMzIxNDQyNSIsInR5cGUiOiJhY2Nlc3MifQ.ozS1n56tyh64Dmg8E_UNHTFE5x2t2go6RfC-1dsRuKQ
+
+
+{
+  "notice_id": 123
+}
