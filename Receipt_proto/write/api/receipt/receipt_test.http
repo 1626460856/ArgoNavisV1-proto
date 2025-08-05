@@ -1,0 +1,67 @@
+POST http://localhost:8102/receipt/write/create/style
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTQzNzIyMDQsImlzcyI6IkhvNXNqT0c5MVFXd2pVRUlodzNFRENCQTU3SFBlbnBNIiwic3ViIjoiQTIwMDMiLCJ0eXBlIjoiYWNjZXNzIn0.VECKq3o1lhrYM5xfABKeIakPGBf9b6jchPAKLbBDGOM
+
+{
+  "receipt_style": [
+    {
+      "receiptColumnName": "是否离校",
+      "SingleOption": 1,
+      "optionList": ["离校", "不离校", "暂缓"]
+    },
+    {
+      "receiptColumnName": "上传文件",
+      "SingleOption": 1,
+      "optionList": ["upload_file"]
+    },
+    {
+      "receiptColumnName": "健康状况",
+      "SingleOption": 0,
+      "optionList": ["正常", "发热", "咳嗽"]
+    }
+  ]
+}
+###
+POST http://localhost:8102/receipt/write/student/reply
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTQzNzQxMTAsImlzcyI6IkhvNXNqT0c5MVFXd2pVRUlodzNFRENCQTU3SFBlbnBNIiwic3ViIjoiMjE0NDE5IiwidHlwZSI6ImFjY2VzcyJ9.T5my5E-QoobsXC53dJQiBSBEatSjU070s1JOG3iQFfU
+
+{
+  "notice_id": 123,
+  "receipt_write": [
+    {
+      "receiptColumnName": "是否离校",
+      "options": ["离校"]
+    },
+    {
+      "receiptColumnName": "上传文件",
+      "options": ["http://file.url/sample1.jpg"]
+    },
+    {
+      "receiptColumnName": "健康状况",
+      "options": ["正常", "轻微咳嗽"]
+    }
+  ]
+}
+###
+POST http://localhost:8102/receipt/write/change/reply
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTM5NjcwMTEsImlzcyI6IkhvNXNqT0c5MVFXd2pVRUlodzNFRENCQTU3SFBlbnBNIiwic3ViIjoiMjAyMzIxNDQyNSIsInR5cGUiOiJhY2Nlc3MifQ.ozS1n56tyh64Dmg8E_UNHTFE5x2t2go6RfC-1dsRuKQ
+
+{
+  "receipt_write_id": "abc123",
+  "receipt_write_change": [
+    {
+      "receiptColumnName": "是否离校",
+      "options": ["暂缓"]
+    },
+    {
+      "receiptColumnName": "健康状况",
+      "options": ["发热"]
+    },
+    {
+      "receiptColumnName": "备注",
+      "options": ["请注意隔离"]
+    }
+  ]
+}
