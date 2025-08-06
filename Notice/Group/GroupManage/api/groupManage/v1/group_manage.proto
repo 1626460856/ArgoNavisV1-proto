@@ -1,0 +1,103 @@
+syntax = "proto3";
+package GroupManage;
+
+import "google/api/annotations.proto";
+
+option go_package = "ArgoNavisV1/GroupManage/api/groupManage/v1;groupManage";
+
+service GroupManage {
+
+  // 删除群组
+  rpc DeleteGroup(DeleteGroupReq) returns (CommonResp) {
+    option (google.api.http) = {
+      post: "/group/delete"
+      body: "*"
+    };
+  }
+
+  // 新建群组
+  rpc CreateGroup(CreateGroupReq) returns (CommonResp) {
+    option (google.api.http) = {
+      post: "/group/create"
+      body: "*"
+    };
+  }
+
+  // 修改群组
+  rpc UpdateGroup(UpdateGroupReq) returns (CommonResp) {
+    option (google.api.http) = {
+      post: "/group/update"
+      body: "*"
+    };
+  }
+
+}
+
+message CommonResp {
+  int32 code = 1;
+  string message = 2;
+}
+//班级信息
+message ClassInfo {
+  string class_id = 1;
+  string class_name = 2;
+  bool check = 3;
+}
+//学生信息
+message StudentInfo {
+  string student_id = 1;
+  string student_name = 2;
+  bool check = 3;
+}
+
+// 年级信息
+message GradeLevel {
+  string grade_id = 1;
+  bool check = 2;  // 是否勾选
+  repeated SubjectInfo subjects = 3;  // 专业列表
+}
+// 专业信息
+message SubjectInfo {
+  string subject_name = 1;
+  bool check = 2;  // 是否勾选
+  repeated ClassInfo classes = 3;  // 班级列表
+}
+// 班级完整信息（含学生）
+message ClassFullInfo {
+  string grade_id = 1;
+  string subject_name = 2;
+  string class_id = 3;
+  string class_name = 4;
+  repeated StudentInfo students = 5;  // 班级学生
+}
+
+
+// ======== 删除群组 ========
+
+message DeleteGroupReq {
+  int32 group_id = 1;
+}
+
+// ======== 创建群组 ========
+
+message CreateGroupReq {
+  string group_name = 1;
+  int32 category = 2; // "0" 班级 / "1" 职位 / "2" 个人
+  repeated GradeLevel grade_level_list = 3;  // 年级层次结构
+  repeated ClassFullInfo classes = 4;       // 班级详细信息
+}
+// ======== 修改群组 ========
+
+message UpdateGroupReq {
+  int32 group_id = 1;
+  string group_name = 2;
+  int32 category = 3;  // 0=班级，1=职位，2=按个人
+  repeated Member members = 4;  // 群组成员
+}
+// 群组成员
+message Member {
+  string student_id = 1;
+  string student_name = 2;
+}
+
+
