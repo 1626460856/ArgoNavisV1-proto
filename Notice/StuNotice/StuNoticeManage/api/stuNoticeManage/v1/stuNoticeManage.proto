@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package StuNoticeManage;
+
+import "google/api/annotations.proto";
+
+option go_package = "ArgoNavisV3/StuNoticeManage/api/stuNoticeManage/v1;stuNoticeManage";
+
+// 学生端通知管理服务定义
+service StuManage {
+  
+  // 确认通知
+  rpc ConfirmNotice (ConfirmNoticeReq) returns (ConfirmNoticeResp) {
+    option (google.api.http) = {
+      post: "/student/notice/confirm"
+      body: "*"
+    };
+  }
+}
+
+// 确认反馈的请求消息
+message ConfirmNoticeReq {
+  int32 notice_id = 1;
+  string recepit_write_id = 2;
+}
+
+// 确认反馈的响应消息
+message ConfirmNoticeResp {
+  int32 code = 1;
+  string msg = 2;
+}

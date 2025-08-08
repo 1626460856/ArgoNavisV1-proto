@@ -1,0 +1,171 @@
+### 教师端发布通知接口测试
+
+### 1. 正常情况 - 发布完整通知（包含收集表和文件）
+POST http://localhost:8108/teacher/publish/notice
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTQ2NDc0OTYsImlzcyI6IkhvNXNqT0c5MVFXd2pVRUlodzNFRENCQTU3SFBlbnBNIiwic3ViIjoiQTIwMjIwMjAxIiwidHlwZSI6ImFjY2VzcyJ9.qY964hEuKwESioMyHw_I_PpjFfqAKBkOmqrh4vOx4k4
+Content-Type: application/json
+
+{
+  "notice_title": "期末作业提交通知-4",
+  "notice_context": "请各位同学在截止时间前提交期末作业，包括代码文件和实验报告。",
+  "group_list": [
+    {
+      "group_id": "6",
+      "group_name": "班级群组-A20220201"
+    }
+  ],
+  "deadline": "2025-08-15 23:59:59",
+  "receipt_style_id": "ReceiptStyle-1004",
+  "priority": "重要且紧急",
+  "file_list": [
+    {
+      "file_name": "作业要求.pdf",
+      "file_url": "http://example.com/files/homework_requirements.pdf"
+    },
+    {
+      "file_name": "参考资料.docx",
+      "file_url": "http://example.com/files/reference.docx"
+    }
+  ],
+  "reminder_times": [
+    "72h",
+    "12h",
+    "30m"
+  ],
+  "overtime": "2h"
+}
+### 2. 正常情况 - 发布简单通知（无收集表和文件）
+POST http://localhost:8108/teacher/publish/notice
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTQ1NDQ0MjAsImlzcyI6IkhvNXNqT0c5MVFXd2pVRUlodzNFRENCQTU3SFBlbnBNIiwic3ViIjoiQTIwMjIwMzAxIiwidHlwZSI6ImFjY2VzcyJ9.-unnoBrRBeIogCxPCHdIdvYY2oVQUuy9MoBgTdZrF0I
+Content-Type: application/json
+
+{
+  "notice_title": "课程调整通知",
+  "notice_context": "由于教室调整，下周三的课程改到A101教室上课。",
+  "group_list": [
+    {
+      "group_id": "11",
+      "group_name": "班级群组-A20220301"
+    }
+  ],
+  "deadline": "2025-08-12 08:00:00",
+  "priority": "一般",
+  "reminder_times": [
+  ]
+}
+
+### 3. 错误情况 - 无效token
+POST http://localhost:8204/teacher/publish/notice
+Authorization: Bearer invalid_token
+Content-Type: application/json
+
+{
+  "notice_title": "测试通知",
+  "notice_context": "测试内容",
+  "group_list": [
+    {
+      "group_id": "201",
+      "group_name": "计算机2201班"
+    }
+  ],
+  "deadline": "2025-08-15 23:59:59",
+  "priority": "一般"
+}
+
+### 4. 错误情况 - 缺少必填字段（标题为空）
+POST http://localhost:8204/teacher/publish/notice
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTQ0NzQ5ODQsImlzcyI6IkhvNXNqT0c5MVFXd2pVRUlodzNFRENCQTU3SFBlbnBNIiwic3ViIjoidGVhY2hlcl9zdHVfdGVzdF8wMDEiLCJ0eXBlIjoiYWNjZXNzIn0.example_teacher_token
+Content-Type: application/json
+
+{
+  "notice_title": "",
+  "notice_context": "测试内容",
+  "group_list": [
+    {
+      "group_id": "201",
+      "group_name": "计算机2201班"
+    }
+  ],
+  "deadline": "2025-08-15 23:59:59",
+  "priority": "一般"
+}
+
+### 5. 错误情况 - 群组列表为空
+POST http://localhost:8204/teacher/publish/notice
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTQ0NzQ5ODQsImlzcyI6IkhvNXNqT0c5MVFXd2pVRUlodzNFRENCQTU3SFBlbnBNIiwic3ViIjoidGVhY2hlcl9zdHVfdGVzdF8wMDEiLCJ0eXBlIjoiYWNjZXNzIn0.example_teacher_token
+Content-Type: application/json
+
+{
+  "notice_title": "测试通知",
+  "notice_context": "测试内容",
+  "group_list": [],
+  "deadline": "2025-08-15 23:59:59",
+  "priority": "一般"
+}
+
+###
+### 预期响应格式：
+### 
+### 成功响应 (200):
+### {
+###   "code": 200,
+###   "msg": "发布成功"
+### }
+###
+### 错误响应示例：
+### {
+###   "code": 401,
+###   "msg": "未授权，无法获取教师信息: token invalid"
+### }
+###
+### {
+###   "code": 400,
+###   "msg": "通知标题不能为空"
+### }
+###
+### {
+###   "code": 400,
+###   "msg": "群组列表不能为空"
+### }
+###
+### {
+###   "code": 500,
+###   "msg": "发布通知失败: database connection error"
+### }
+
+###
+### 测试说明：
+### 1. 使用教师teacher_stu_test_001的真实token进行测试
+### 2. Token信息：
+###    - sub: teacher_stu_test_001 (教师ID)
+###    - exp: 1754474984 (2025年过期，长期有效)
+###    - iss: Ho5sjOG91QWwjUEIhw3EDCBA57HPenpM
+### 3. 测试数据：
+###    - 群组ID: 201, 202 (需要在group_person表中有对应的学生数据)
+###    - 收集表格式ID: ReceiptStyle-1001 (可选，用于需要收集学生信息的通知)
+### 4. 测试场景：
+###    - 正常情况：完整通知发布、简单通知发布
+###    - 错误情况：无效token、缺少必填字段、群组列表为空
+### 5. 数据库操作验证：
+###    - notice表：插入通知基本信息
+###    - submission表：为每个学生创建提交记录（状态为"未读"）
+###    - reminder_schedule表：创建提醒计划记录
+###
+### 使用步骤：
+### 1. 确保数据库中有测试群组和学生数据
+### 2. 确保TeaNoticeManage服务运行在localhost:8204
+### 3. 使用上述HTTP请求进行测试
+### 4. 检查数据库表中的数据是否正确插入
+###
+### 预期结果：
+### - 成功发布：返回200状态码，数据库中正确插入相关记录
+### - 参数验证：返回400状态码，提示具体的参数错误
+### - 权限验证：返回401状态码，提示未授权错误
+### - 数据库错误：返回500状态码，提示具体的错误信息
+###
+### 数据库验证：
+### 发布成功后，可以通过以下SQL验证数据：
+### SELECT * FROM notice WHERE teacher_id = 'teacher_stu_test_001' ORDER BY notice_id DESC LIMIT 1;
+### SELECT * FROM submission WHERE notice_id = (最新的notice_id);
+### SELECT * FROM reminder_schedule WHERE notice_id = (最新的notice_id);
+###
