@@ -1,0 +1,278 @@
+syntax = "proto3";
+package GroupCheck;
+
+import "google/api/annotations.proto";
+
+option go_package = "ArgoNavisV1/GroupCheck/api/groupCheck/v1;group_check";
+
+
+// ========== 基础数据结构（消息） ==========
+
+message CommonResp {
+  int32 code = 1;
+  string message = 2;
+}
+//班级信息
+message ClassInfo {
+  string class_id = 1;
+  string class_name = 2;
+  bool check = 3;
+}
+//学生信息
+message StudentInfo {
+  string student_id = 1;
+  string student_name = 2;
+  bool check = 3;
+}
+
+// 年级信息
+message GradeLevel {
+  string grade_id = 1;
+  bool check = 2;  // 是否勾选
+  repeated SubjectInfo subjects = 3;  // 专业列表
+}
+// 专业信息
+message SubjectInfo {
+  string subject_name = 1;
+  bool check = 2;  // 是否勾选
+  repeated ClassInfo classes = 3;  // 班级列表
+}
+// 班级完整信息（含学生）
+message ClassFullInfo {
+  string grade_id = 1;
+  string subject_name = 2;
+  string class_id = 3;
+  string class_name = 4;
+  repeated StudentInfo students = 5;  // 班级学生
+}
+
+
+
+
+// 班级基本信息
+message ClassBasicInfo {
+  string class_id = 1;
+  string class_name = 2;
+  bool check = 3;
+}
+
+// 学生详情
+message StudentDetail {
+  string grade_id = 1;
+  string subject_name = 2;
+  string class_id = 3;
+  string student_name = 4;
+  string student_id = 5;
+}
+
+// 群组基本信息
+message GroupInfo {
+  int32 group_id = 1;
+  string group_name = 2;
+  int32 category = 3;
+}
+
+// 个人群组/职位群组成员
+message PersonItem {
+  string student_id = 1;
+  string student_name = 2;
+}
+
+// 班级群组成员
+message ClassItem {
+  string class_id = 1;
+  string class_name = 2;
+}
+
+// 群组详情
+message GroupDetail {
+  GroupInfo group_info = 1;
+  repeated GradeLevel grade_level = 2;
+  repeated ClassFullInfo class_info_list = 3;
+}
+
+// 群组项（用于班级群组列表）
+message GroupItem {
+  int32 group_id = 1;
+  string group_name = 2;
+  repeated ClassItem class_list = 3;
+}
+
+// 学生群组项（用于个人/职位群组列表）
+message StudentGroupItem {
+  int32 group_id = 1;
+  string group_name = 2;
+  repeated PersonItem person_list = 3;
+}
+
+// 通用响应结构
+message StandardResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+
+// ========== 请求 / 响应结构 ==========
+
+// --- 获取群组详情 ---
+message GetGroupReq {
+  int32 group_id = 1;
+}
+message GetGroupResp {
+  int32 code = 1;
+  string message = 2;
+  GroupDetail data = 3;
+}
+
+// --- 获取班级详情 ---
+message GetClassDetailReq {
+  string class_id = 1;
+}
+message GetClassDetailResp {
+  int32 code = 1;
+  string msg = 2;
+  ClassFullInfo data = 3;
+}
+
+// --- 搜索学生 ---
+message SearchStudentReq {
+  string student_name = 1;
+}
+message SearchStudentResp {
+  int32 code = 1;
+  string message = 2;
+  repeated StudentDetail data = 3;
+}
+
+// --- 获取年级-班级结构树 ---
+message GetGradeClassTreeReq {}
+message GetGradeClassTreeResp {
+  int32 code = 1;
+  string msg = 2;
+  repeated GradeLevel data = 3;
+}
+
+// --- 获取个人群组列表 ---
+message GetPersonalGroupsReq {}
+message ListPersonGroupResp {
+  int32 code = 1;
+  string message = 2;
+  repeated StudentGroupItem data = 3;
+}
+
+// --- 获取职位群组列表 ---
+message GetPositionGroupsReq {}
+message ListPositionGroupResp {
+  int32 code = 1;
+  string message = 2;
+  repeated StudentGroupItem data = 3;
+}
+
+// --- 获取班级群组列表 ---
+message GetClassGroupsReq {}
+message ListClassGroupResp {
+  int32 code = 1;
+  string message = 2;
+  repeated GroupItem data = 3;
+}
+// ======== 删除群组 ========
+
+message DeleteGroupReq {
+  int32 group_id = 1;
+}
+
+// ======== 创建群组 ========
+
+message CreateGroupReq {
+  string group_name = 1;
+  int32 category = 2; // "0" 班级 / "1" 职位 / "2" 个人
+  repeated GradeLevel grade_level_list = 3;  // 年级层次结构
+  repeated ClassFullInfo classes = 4;       // 班级详细信息
+}
+// ======== 修改群组 ========
+
+
+message UpdateGroupReq {
+  int32 group_id = 1; // 群组ID
+  string group_name = 2; // 群组名称
+  int32 category = 3; // 群组分类：0=班级，1=职位，2=按个人
+  repeated GradeLevel grade_level_list = 4;  // 年级层次结构（用于组织结构展示）
+  repeated ClassFullInfo classes = 5; // 班级完整信息（用于精确展示勾选学生）
+}
+
+// ========== 服务定义 ==========
+
+service Group {
+  // 获取单个群组旧信息
+  rpc GetGroupDetail(GetGroupReq) returns (GetGroupResp) {
+    option (google.api.http) = {
+      get: "/group/check/detail"
+    };
+  }
+
+  // 获取班级-学生详情
+  rpc GetClassDetail(GetClassDetailReq) returns (GetClassDetailResp) {
+    option (google.api.http) = {
+      get: "/group/check/class/details"
+    };
+  }
+
+  // 根据姓名查询学生列表
+  rpc SearchStudent(SearchStudentReq) returns (SearchStudentResp) {
+    option (google.api.http) = {
+      get: "/group/check/students"
+    };
+  }
+
+  // 获取年级-专业-班级分层结构
+  rpc GetGradeClassTree(GetGradeClassTreeReq) returns (GetGradeClassTreeResp) {
+    option (google.api.http) = {
+      get: "/group/check/grade-structure"
+    };
+  }
+
+  // 获取个人群组列表
+  rpc ListPersonGroup(GetPersonalGroupsReq) returns (ListPersonGroupResp) {
+    option (google.api.http) = {
+      get: "/group/check/list/personal"
+    };
+  }
+
+  // 获取职位群组列表
+  rpc ListPositionGroup(GetPositionGroupsReq) returns (ListPositionGroupResp) {
+    option (google.api.http) = {
+      get: "/group/check/list/position"
+    };
+  }
+
+  // 获取班级群组列表
+  rpc ListClassGroup(GetClassGroupsReq) returns (ListClassGroupResp) {
+    option (google.api.http) = {
+      get: "/group/check/list/class"
+    };
+  }
+
+  // 删除群组
+  rpc DeleteGroup(DeleteGroupReq) returns (CommonResp) {
+    option (google.api.http) = {
+      post: "/group/manage/delete"
+      body: "*"
+    };
+  }
+
+  // 新建群组
+  rpc CreateGroup(CreateGroupReq) returns (CommonResp) {
+    option (google.api.http) = {
+      post: "/group/manage/add"
+      body: "*"
+    };
+  }
+
+  // 修改群组
+  rpc UpdateGroup(UpdateGroupReq) returns (CommonResp) {
+    option (google.api.http) = {
+      post: "/group/manage/update"
+      body: "*"
+    };
+  }
+}
