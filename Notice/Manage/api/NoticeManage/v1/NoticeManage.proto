@@ -1,0 +1,127 @@
+syntax = "proto3";
+
+package NoticeManage;
+
+import "google/api/annotations.proto";
+
+option go_package = "ArgoNavisV3/NoticeManage/api/NoticeManage/v1;NoticeManage";
+
+// 教师端通知管理服务定义
+service TeaManage {
+
+  // 打回单个学生反馈
+  rpc CallbackReceipt (CallbackReceiptReq) returns (CallbackReceiptResp) {
+    option (google.api.http) = {
+      post: "/teacher/receipt/callback"
+      body: "*"
+    };
+  }
+  
+  // 一键提醒
+  rpc RemindNotice (RemindNoticeReq) returns (RemindNoticeResp) {
+    option (google.api.http) = {
+      post: "/teacher/remind/notice"
+      body: "*"
+    };
+  }
+  
+  // 删除通知
+  rpc DeleteNotice (DeleteNoticeReq) returns (DeleteNoticeResp) {
+    option (google.api.http) = {
+      post: "/teacher/delete/notice"
+      body: "*"
+    };
+  }
+  
+  // 发布通知
+  rpc PublishNotice (PublishNoticeReq) returns (PublishNoticeResp) {
+    option (google.api.http) = {
+      post: "/teacher/publish/notice"
+      body: "*"
+    };
+  }
+  // 确认通知
+  rpc ConfirmNotice (ConfirmNoticeReq) returns (ConfirmNoticeResp) {
+    option (google.api.http) = {
+      post: "/student/notice/confirm"
+      body: "*"
+    };
+  }
+}
+
+// 打回单个学生反馈的请求消息
+message CallbackReceiptReq {
+  int32 notice_id = 1;
+  string student_id = 2;
+}
+
+// 打回单个学生反馈的响应消息
+message CallbackReceiptResp {
+  string code = 1;
+  string msg = 2;
+}
+
+// 一键提醒的请求消息
+message RemindNoticeReq {
+  int32 notice_id = 1;
+}
+
+// 一键提醒的响应消息
+message RemindNoticeResp {
+  int32 code = 1;
+  string msg = 2;
+}
+
+// 删除通知的请求消息
+message DeleteNoticeReq {
+  int32 notice_id = 1;
+}
+
+// 删除通知的响应消息
+message DeleteNoticeResp {
+  int32 code = 1;
+  string msg = 2;
+}
+
+// 发布通知的请求消息
+message PublishNoticeReq {
+  string notice_title = 1;
+  string notice_context = 2;
+  repeated GroupInfo group_list = 3;
+  string deadline = 4;
+  string receipt_style_id = 5;
+  string priority = 6;
+  repeated FileInfo file_list = 7;
+  repeated string reminder_times = 8;
+  string overtime = 9;
+}
+
+// 发布通知的响应消息
+message PublishNoticeResp {
+  int32 code = 1;
+  string msg = 2;
+}
+
+// 群组信息
+message GroupInfo {
+  string group_id = 1;
+  string group_name = 2;
+}
+
+// 文件信息
+message FileInfo {
+  string file_name = 1;
+  string file_url = 2;
+}
+
+// 确认反馈的请求消息
+message ConfirmNoticeReq {
+  int32 notice_id = 1;
+  string recepit_write_id = 2;
+}
+
+// 确认反馈的响应消息
+message ConfirmNoticeResp {
+  int32 code = 1;
+  string msg = 2;
+}
