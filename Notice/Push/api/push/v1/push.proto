@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package Push;
+import "google/api/annotations.proto";
+option go_package = "Notice/Push/api/push/v1;push";
+service Push {
+  // 推送一条带 code 的消息给某个群组
+  rpc PushCodeToStudent (PushCodeReq) returns (PushReply) {
+    option (google.api.http) = {
+      post: "/push/notice/code-message"
+      body: "*"
+    };
+  }
+}
+
+message PushCodeReq {
+  repeated string student_id_list = 1;
+  int32 code = 2;       // 消息类型/业务码
+  string message = 3;   // 推送的消息内容
+}
+
+message PushReply {
+  int32 code = 1;       // 返回码（0 表示成功）
+  string message = 2;   // 返回信息
+}
